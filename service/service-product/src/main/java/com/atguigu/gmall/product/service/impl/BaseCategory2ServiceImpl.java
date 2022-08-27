@@ -22,9 +22,9 @@ public class BaseCategory2ServiceImpl extends ServiceImpl<BaseCategory2Mapper, B
     BaseCategory2Mapper baseCategory2Mapper;
 
     @Override
-    public List<BaseCategory2> getCategory1Child(Long c1id) {
+    public List<BaseCategory2> getCategory1Child(Long c1Id) {
         QueryWrapper<BaseCategory2> wrapper = new QueryWrapper<>();
-        wrapper.eq("category1_id", c1id);
+        wrapper.eq("category1_id", c1Id);
         List<BaseCategory2> list = baseCategory2Mapper.selectList(wrapper);
         return list;
     }
