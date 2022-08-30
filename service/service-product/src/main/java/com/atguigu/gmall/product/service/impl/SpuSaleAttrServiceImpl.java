@@ -6,15 +6,26 @@ import com.atguigu.gmall.product.service.SpuSaleAttrService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
 /**
-* @author chenyv
-* @description 针对表【spu_sale_attr(spu销售属性)】的数据库操作Service实现
-* @createDate 2022-08-26 16:46:50
-*/
+ * @author chenyv
+ * @description 针对表【spu_sale_attr(spu销售属性)】的数据库操作Service实现
+ * @createDate 2022-08-26 16:46:50
+ */
 @Service
 public class SpuSaleAttrServiceImpl extends ServiceImpl<SpuSaleAttrMapper, SpuSaleAttr>
-    implements SpuSaleAttrService{
+        implements SpuSaleAttrService {
 
+    @Resource
+    SpuSaleAttrMapper spuSaleAttrMapper;
+
+    @Override
+    public List<SpuSaleAttr> getSaleAttrAndValueBySpuId(Long spuId) {
+        List<SpuSaleAttr> list = spuSaleAttrMapper.getSaleAttrAndValueBySpuId(spuId);
+        return list;
+    }
 }
 
 
