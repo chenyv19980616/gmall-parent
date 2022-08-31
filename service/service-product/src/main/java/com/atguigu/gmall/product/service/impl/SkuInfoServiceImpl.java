@@ -1,20 +1,18 @@
 package com.atguigu.gmall.product.service.impl;
 
-import com.atguigu.gmall.model.product.SkuAttrValue;
-import com.atguigu.gmall.model.product.SkuImage;
-import com.atguigu.gmall.model.product.SkuInfo;
-import com.atguigu.gmall.model.product.SkuSaleAttrValue;
+import com.atguigu.gmall.model.product.*;
+import com.atguigu.gmall.model.to.CategoryViewTo;
+import com.atguigu.gmall.model.to.SkuDetailTo;
+import com.atguigu.gmall.product.mapper.BaseCategory1Mapper;
 import com.atguigu.gmall.product.mapper.SkuInfoMapper;
-import com.atguigu.gmall.product.service.SkuAttrValueService;
-import com.atguigu.gmall.product.service.SkuImageService;
-import com.atguigu.gmall.product.service.SkuInfoService;
-import com.atguigu.gmall.product.service.SkuSaleAttrValueService;
+import com.atguigu.gmall.product.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -37,6 +35,12 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
 
     @Resource
     SkuInfoMapper skuInfoMapper;
+
+    @Resource
+    BaseCategory1Mapper baseCategory1Mapper;
+
+    @Autowired
+    SpuSaleAttrService spuSaleAttrService;
 
     @Transactional
     @Override
@@ -79,6 +83,39 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
     public void onSale(Long skuId) {
         skuInfoMapper.updateIsSale(skuId, 1);
     }
+
+    @Override
+    public SkuDetailTo getSkuDetail(Long skuId) {
+
+        SkuDetailTo skuDetailTo = new SkuDetailTo();
+
+        //获取sku的基本信息（信息里面包括 category3_id）
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        //商品sku的图片信息
+        skuInfo.setSkuImageList(skuImageService.getSkuImage(skuId));
+
+        skuDetailTo.setSkuInfo(skuInfo);
+
+        //商品sku的完整分类信息
+        CategoryViewTo categoryViewTo = baseCategory1Mapper.getCategoryView(skuInfo.getCategory3Id());
+        skuDetailTo.setCategoryView(categoryViewTo);
+
+        //实时价格查询
+        BigDecimal price = get1010price(skuId);
+        skuDetailTo.setPrice(price);
+
+        List<SpuSaleAttr> saleAttrList = spuSaleAttrService.getSaleAttrAndValueMarkSku(skuInfo.getSpuId(),skuId);
+        skuDetailTo.setSpuSaleAttrList(saleAttrList);
+
+        return skuDetailTo;
+    }
+
+    @Override
+    public BigDecimal get1010price(Long skuId) {
+        BigDecimal price = skuInfoMapper.get1010price(skuId);
+        return price;
+    }
+
 
 }
 
