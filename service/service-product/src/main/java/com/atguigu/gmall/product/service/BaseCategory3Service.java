@@ -14,4 +14,5 @@ public interface BaseCategory3Service extends IService<BaseCategory3> {
 
     //获取某个二级分类下的所有三级分类
     List<BaseCategory3> getCategory2Child(Long c2id);
+
 }

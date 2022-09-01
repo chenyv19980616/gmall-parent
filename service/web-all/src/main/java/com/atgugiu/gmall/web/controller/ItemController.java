@@ -22,7 +22,6 @@ public class ItemController {
 
     /**
      * 商品详情页展示
-     *
      * @param skuId
      * @return
      */

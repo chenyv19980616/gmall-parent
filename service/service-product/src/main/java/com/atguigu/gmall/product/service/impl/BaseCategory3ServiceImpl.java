@@ -1,6 +1,7 @@
 package com.atguigu.gmall.product.service.impl;
 
 import com.atguigu.gmall.model.product.BaseCategory3;
+import com.atguigu.gmall.model.to.CategoryViewTo;
 import com.atguigu.gmall.product.mapper.BaseCategory3Mapper;
 import com.atguigu.gmall.product.service.BaseCategory3Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -30,6 +31,7 @@ public class BaseCategory3ServiceImpl
         List<BaseCategory3> list = baseCategory3Mapper.selectList(wrapper);
         return list;
     }
+
 }
 
 
