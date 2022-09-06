@@ -22,6 +22,7 @@ public class ItemController {
 
     /**
      * 商品详情页展示
+     *
      * @param skuId
      * @return
      */
@@ -31,7 +32,7 @@ public class ItemController {
         Result<SkuDetailTo> result = skuDetailFeignClient.getSkuDetail(skuId);
         if (result.isOk()) {
             SkuDetailTo skuDetailTo = result.getData();
-            if (skuDetailTo.getSkuInfo()==null) {
+            if (skuDetailTo == null || skuDetailTo.getSkuInfo() == null) {
                 //说明远程没有查到商品
                 return "item/404";
             }

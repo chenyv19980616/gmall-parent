@@ -50,13 +50,14 @@ public class SkuDetailServiceImpl implements SkuDetailService {
             boolean isContains = cacheOpsService.bloomContains(skuId);
             if (!isContains) {
                 // 布隆说没有，一定没有
+                log.info("[{}]商品 - 布隆判定没有，检测到隐藏的攻击属性！", skuId);
                 return null;
             }
             // 布隆说有，有可能有，就需要回源查数据
             boolean lock = cacheOpsService.tryLock(skuId);    //为当前商品加自己的分布式锁
             if (lock) {
                 //获取锁成功,查询远程
-                log.info("[{}]缓存未命中，布隆说有，准备回源。。。",skuId);
+                log.info("[{}]缓存未命中，布隆说有，准备回源。。。", skuId);
                 SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);
                 //数据放缓存
                 cacheOpsService.saveData(cacheKey, fromRpc);

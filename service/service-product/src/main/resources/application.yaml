@@ -3,6 +3,9 @@ server:
 
 #数据源
 spring:
+  redis:
+    host: 192.168.6.200
+    password: 123456
   datasource:
     url: jdbc:mysql://192.168.6.200:3306/gmall_product?useSSL=false&characterEncoding=utf-8
     username: root

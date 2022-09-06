@@ -3,6 +3,7 @@ package com.atguigu.gmall.item.cache.impl;
 import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.common.util.Jsons;
 import com.atguigu.gmall.item.cache.CacheOpsService;
+import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,8 @@ public class CacheOpsServiceImpl implements CacheOpsService {
 
     @Override
     public boolean bloomContains(Long skuId) {
-        return true;
+        RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(SysRedisConst.BLOOM_SKUID);
+        return bloomFilter.contains(skuId);
     }
 
     @Override
