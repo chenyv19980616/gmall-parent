@@ -27,12 +27,16 @@ public class Jsons {
 
     /**
      * 把Json转为对象
+     *
      * @param jsonStr
      * @param clazz
      * @param <T>
      * @return
      */
     public static <T> T toObj(String jsonStr, Class<T> clazz) {
+        if (jsonStr == null) {
+            return null;
+        }
         T t = null;
         try {
             t = mapper.readValue(jsonStr, clazz);
