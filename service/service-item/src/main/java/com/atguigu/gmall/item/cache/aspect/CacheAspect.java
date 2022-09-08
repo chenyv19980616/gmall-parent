@@ -1,6 +1,6 @@
 package com.atguigu.gmall.item.cache.aspect;
 
-import com.atguigu.gmall.item.cache.CacheOpsService;
+import com.atguigu.gmall.item.cache.service.CacheOpsService;
 import com.atguigu.gmall.item.cache.annotation.GmallCache;
 import com.atguigu.gmall.model.to.SkuDetailTo;
 import org.aspectj.lang.ProceedingJoinPoint;

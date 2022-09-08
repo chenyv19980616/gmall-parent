@@ -2,7 +2,7 @@ package com.atguigu.gmall.item.service.impl;
 
 import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.common.result.Result;
-import com.atguigu.gmall.item.cache.CacheOpsService;
+import com.atguigu.gmall.item.cache.service.CacheOpsService;
 import com.atguigu.gmall.item.cache.annotation.GmallCache;
 import com.atguigu.gmall.item.feign.SkuDetailFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
