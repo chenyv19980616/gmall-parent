@@ -3,6 +3,7 @@ package com.atguigu.gmall.item.service.impl;
 import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.item.cache.CacheOpsService;
+import com.atguigu.gmall.item.cache.annotation.GmallCache;
 import com.atguigu.gmall.item.feign.SkuDetailFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.product.SkuImage;
@@ -34,12 +35,23 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     @Resource
     ThreadPoolExecutor executor;
 
-
     @Autowired
     CacheOpsService cacheOpsService;
 
+    /**
+     * 表达式中的params代表方法的所有参数列表
+     *
+     * @param skuId
+     * @return
+     */
+    @GmallCache(cacheKey = SysRedisConst.SKU_INFO_PREFIX + "#{#params[0]}")
     @Override
     public SkuDetailTo getSkuDetail(Long skuId) {
+        SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);
+        return fromRpc;
+    }
+
+    public SkuDetailTo getSkuDetailWithCache(Long skuId) {
         String cacheKey = SysRedisConst.SKU_INFO_PREFIX + skuId;
         // 1. 先查缓存
         SkuDetailTo cacheData = cacheOpsService.getCacheData(cacheKey, SkuDetailTo.class);
@@ -54,7 +66,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
                 return null;
             }
             // 布隆说有，有可能有，就需要回源查数据
-            boolean lock = cacheOpsService.tryLock(skuId);    //为当前商品加自己的分布式锁
+            // 为当前商品加自己的分布式锁
+            boolean lock = cacheOpsService.tryLock(skuId);
             if (lock) {
                 //获取锁成功,查询远程
                 log.info("[{}]缓存未命中，布隆说有，准备回源。。。", skuId);
@@ -133,6 +146,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
         return detailTo;
     }
+
+
 
     /*
     private Map<Long, SkuDetailTo> skuCache = new ConcurrentHashMap<>();        //本地缓存容器
