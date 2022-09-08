@@ -38,7 +38,6 @@ public class CacheAspect {
     @Around("@annotation(com.atguigu.gmall.item.cache.annotation.GmallCache)")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = null;
-        Object arg = joinPoint.getArgs()[0];    //方法的参数 skuId
         String cacheKey = determinCacheKey(joinPoint);
 
         //先查缓存
@@ -53,17 +52,22 @@ public class CacheAspect {
             String bloomName = determinBloomKey(joinPoint);
             if (!StringUtils.isEmpty(bloomName)) {
                 //指定开启了布隆
+                //拿到布隆值
                 Object bVal = determinBloomValue(joinPoint);
                 boolean contains = cacheOpsService.bloomContains(bloomName, bVal);
                 if (!contains) {
                     return null;
                 }
             }
+
             //布隆说有，准备回源，有击穿风险
-            boolean tryLock = false;
+            boolean lock = false;
+            String lockName = "";
             try {
-                tryLock = cacheOpsService.tryLock((Long) arg);
-                if (tryLock) {
+                //不同场景应该用不同的锁
+                lockName = determinLockName(joinPoint);
+                lock = cacheOpsService.tryLock(lockName);
+                if (lock) {
                     //获取到锁，回源查询
                     result = joinPoint.proceed(joinPoint.getArgs());
                     //调用成功
@@ -74,8 +78,8 @@ public class CacheAspect {
                     return cacheOpsService.getCacheData(cacheKey, SkuDetailTo.class);
                 }
             } finally {
-                if (tryLock) {
-                    cacheOpsService.unlock((Long) arg);
+                if (lock) {
+                    cacheOpsService.unlock(lockName);
                 }
             }
         }
@@ -84,7 +88,26 @@ public class CacheAspect {
     }
 
     /**
+     * 根据表达式计算出要用的锁的名字
+     *
+     * @param joinPoint
+     * @return
+     */
+    private String determinLockName(ProceedingJoinPoint joinPoint) {
+        // 1、拿到目标方法上的@GmallCache注解
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        // 2、拿到注解
+        GmallCache cacheAnnotation = method.getDeclaredAnnotation(GmallCache.class);
+        // 3、拿到锁名
+        String lockExpression = cacheAnnotation.lockName();
+        String lockName = evaluationExpression(lockExpression, joinPoint, String.class);
+        return lockName;
+    }
+
+    /**
      * 根据布隆过滤器表达式计算出布隆需要判定的对象值
+     *
      * @param joinPoint
      * @return
      */

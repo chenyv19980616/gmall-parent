@@ -77,6 +77,12 @@ public class CacheOpsServiceImpl implements CacheOpsService {
     }
 
     @Override
+    public boolean tryLock(String lockName) {
+        RLock lock = redissonClient.getLock(lockName);
+        return lock.tryLock();
+    }
+
+    @Override
     public void saveData(String cacheKey, Object obj) {
         if (obj == null) {
             //空值时间短一点
@@ -99,5 +105,11 @@ public class CacheOpsServiceImpl implements CacheOpsService {
     public boolean bloomContains(String bloomName, Object bVal) {
         RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(bloomName);
         return bloomFilter.contains(bVal);
+    }
+
+    @Override
+    public void unlock(String lockName) {
+        RLock lock = redissonClient.getLock(lockName);
+        lock.unlock();  //Redission已经防止了删除别人的锁
     }
 }

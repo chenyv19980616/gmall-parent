@@ -10,6 +10,7 @@ public interface CacheOpsService {
 
     /**
      * 从缓存中获取一个json并转为普通对象
+     *
      * @param cacheKey
      * @param clz
      * @param <T>
@@ -20,6 +21,7 @@ public interface CacheOpsService {
 
     /**
      * 从缓存中获取一个json并转为一个复杂对象
+     *
      * @param cacheKey
      * @param type
      * @return
@@ -28,6 +30,7 @@ public interface CacheOpsService {
 
     /**
      * 布隆过滤器判断是否有这个商品
+     *
      * @param skuId
      * @return
      */
@@ -35,13 +38,23 @@ public interface CacheOpsService {
 
     /**
      * 给指定商品加锁
+     *
      * @param skuId
      * @return
      */
     boolean tryLock(Long skuId);
 
     /**
+     * 加指定的分布式锁
+     *
+     * @param lockName
+     * @return
+     */
+    boolean tryLock(String lockName);
+
+    /**
      * 把指定对象使用指定的key保存到redis
+     *
      * @param cacheKey
      * @param obj
      */
@@ -49,15 +62,24 @@ public interface CacheOpsService {
 
     /**
      * 解锁
+     *
      * @param skuId
      */
     void unlock(Long skuId);
 
     /**
      * 判定指定布隆过滤器（bloomName）里面是否包含指定值（bVal）
+     *
      * @param bloomName
      * @param bVal
      * @return
      */
     boolean bloomContains(String bloomName, Object bVal);
+
+    /**
+     * 解指定的锁
+     *
+     * @param lockName
+     */
+    void unlock(String lockName);
 }
