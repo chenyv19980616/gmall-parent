@@ -11,5 +11,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface GmallCache {
-    String cacheKey() default "";
+    String cacheKey() default ""; //cacheKey
+
+    String bloomName() default "";  //如果指定了布隆过滤器的名字就用
+
+    String bloomValue() default "";  //如果指定了布隆过滤器的名字就用
 }

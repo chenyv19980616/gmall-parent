@@ -52,4 +52,12 @@ public interface CacheOpsService {
      * @param skuId
      */
     void unlock(Long skuId);
+
+    /**
+     * 判定指定布隆过滤器（bloomName）里面是否包含指定值（bVal）
+     * @param bloomName
+     * @param bVal
+     * @return
+     */
+    boolean bloomContains(String bloomName, Object bVal);
 }

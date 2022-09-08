@@ -94,4 +94,10 @@ public class CacheOpsServiceImpl implements CacheOpsService {
         //解掉这把锁
         lock.unlock();
     }
+
+    @Override
+    public boolean bloomContains(String bloomName, Object bVal) {
+        RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(bloomName);
+        return bloomFilter.contains(bVal);
+    }
 }
