@@ -1,8 +1,7 @@
-package com.atguigu.gmall.item.cache.aspect;
+package com.atguigu.starter.cache.aspect;
 
-import com.atguigu.gmall.item.cache.service.CacheOpsService;
-import com.atguigu.gmall.item.cache.annotation.GmallCache;
-import com.atguigu.gmall.model.to.SkuDetailTo;
+import com.atguigu.starter.cache.annotation.GmallCache;
+import com.atguigu.starter.cache.service.CacheOpsService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,7 +34,7 @@ public class CacheAspect {
 
     ParserContext context = new TemplateParserContext();
 
-    @Around("@annotation(com.atguigu.gmall.item.cache.annotation.GmallCache)")
+    @Around("@annotation(com.atguigu.starter.cache.annotation.GmallCache)")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = null;
         String cacheKey = determinCacheKey(joinPoint);
@@ -75,7 +74,7 @@ public class CacheAspect {
                     return result;
                 } else {
                     Thread.sleep(1000);
-                    return cacheOpsService.getCacheData(cacheKey, SkuDetailTo.class);
+                    return cacheOpsService.getCacheData(cacheKey, returnType);
                 }
             } finally {
                 if (lock) {

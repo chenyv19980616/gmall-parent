@@ -1,8 +1,8 @@
-package com.atguigu.gmall.item.cache.service.impl;
+package com.atguigu.starter.cache.service.impl;
 
-import com.atguigu.gmall.common.constant.SysRedisConst;
-import com.atguigu.gmall.common.util.Jsons;
-import com.atguigu.gmall.item.cache.service.CacheOpsService;
+import com.atguigu.starter.cache.constant.SysRedisConst;
+import com.atguigu.starter.cache.service.CacheOpsService;
+import com.atguigu.starter.cache.utils.Jsons;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
