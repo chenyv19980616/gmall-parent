@@ -1,10 +1,12 @@
 package com.atguigu.gmall.product.service.impl;
 
+import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.model.product.BaseCategory1;
 import com.atguigu.gmall.model.to.CategoryTreeTo;
 import com.atguigu.gmall.model.to.CategoryViewTo;
 import com.atguigu.gmall.product.mapper.BaseCategory1Mapper;
 import com.atguigu.gmall.product.service.BaseCategory1Service;
+import com.atguigu.starter.cache.annotation.GmallCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +25,10 @@ public class BaseCategory1ServiceImpl extends ServiceImpl<BaseCategory1Mapper, B
     @Resource
     BaseCategory1Mapper category1Mapper;
 
+    @GmallCache(cacheKey = SysRedisConst.CACHE_CATEGORYS)
     @Override
     public List<CategoryTreeTo> getAllCategorysWithTree() {
-        List<CategoryTreeTo> categoryTreeTos = category1Mapper.getAllCategorysWithTree();
-        return categoryTreeTos;
+        return category1Mapper.getAllCategorysWithTree();
     }
 
     @Override

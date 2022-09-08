@@ -1,6 +1,7 @@
 package com.atguigu.starter.cache.aspect;
 
 import com.atguigu.starter.cache.annotation.GmallCache;
+import com.atguigu.starter.cache.constant.SysRedisConst;
 import com.atguigu.starter.cache.service.CacheOpsService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -100,6 +101,11 @@ public class CacheAspect {
         GmallCache cacheAnnotation = method.getDeclaredAnnotation(GmallCache.class);
         // 3、拿到锁名
         String lockExpression = cacheAnnotation.lockName();
+        if (StringUtils.isEmpty(lockExpression)) {
+            //没指定锁，用方法级别的锁
+            return SysRedisConst.LOCK_PREFIX + method.getName();
+        }
+        // 4、计算锁值
         String lockName = evaluationExpression(lockExpression, joinPoint, String.class);
         return lockName;
     }

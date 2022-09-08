@@ -17,5 +17,5 @@ public @interface GmallCache {
 
     String bloomValue() default "";  //如果指定了布隆过滤器的名字就用
 
-    String lockName() default "lock:global";  //锁名,传入精确锁就用精确锁，否则用全局锁
+    String lockName() default "";  //锁名,传入精确锁就用精确锁，否则用全局锁
 }
