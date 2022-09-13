@@ -2,7 +2,7 @@ package com.atguigu.gmall.item.service.impl;
 
 import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.common.result.Result;
-import com.atguigu.gmall.item.feign.SkuDetailFeignClient;
+import com.atguigu.gmall.feign.product.SkuProductFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.product.SkuImage;
 import com.atguigu.gmall.model.product.SkuInfo;
@@ -29,8 +29,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Service
 public class SkuDetailServiceImpl implements SkuDetailService {
 
-    @Autowired
-    SkuDetailFeignClient skuDetailFeignClient;
+    @Resource
+    SkuProductFeignClient skuProductFeignClient;
 
     @Resource
     ThreadPoolExecutor executor;
@@ -48,7 +48,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
             cacheKey = SysRedisConst.SKU_INFO_PREFIX + "#{#params[0]}",
             bloomName = SysRedisConst.BLOOM_SKUID,
             bloomValue = "#{#params[0]}",
-            lockName = SysRedisConst.LOCK_SKU_DETAIL + "#{#params[0]}")
+            lockName = SysRedisConst.LOCK_SKU_DETAIL + "#{#params[0]}",
+            ttl = 60 * 60 * 24 * 7L)
     @Override
     public SkuDetailTo getSkuDetail(Long skuId) {
         SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);
@@ -100,7 +101,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
         CompletableFuture<SkuInfo> skuInfoFuture = CompletableFuture.supplyAsync(() -> {
             // 1.查基本信息
-            Result<SkuInfo> result = skuDetailFeignClient.getSkuInfo(skuId);
+            Result<SkuInfo> result = skuProductFeignClient.getSkuInfo(skuId);
             SkuInfo skuInfo = result.getData();
             detailTo.setSkuInfo(skuInfo);
             return skuInfo;
@@ -109,21 +110,21 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         // 2.查商品图片信息
         CompletableFuture<Void> imageFuture = skuInfoFuture.thenAcceptAsync((skuInfo) -> {
             if (skuInfo != null) {
-                Result<List<SkuImage>> skuImages = skuDetailFeignClient.getSkuImages(skuId);
+                Result<List<SkuImage>> skuImages = skuProductFeignClient.getSkuImages(skuId);
                 skuInfo.setSkuImageList(skuImages.getData());
             }
         }, executor);
 
         // 3.查商品实时价格
         CompletableFuture<Void> priceFuture = CompletableFuture.runAsync(() -> {
-            Result<BigDecimal> price = skuDetailFeignClient.getSku1010Price(skuId);
+            Result<BigDecimal> price = skuProductFeignClient.getSku1010Price(skuId);
             detailTo.setPrice(price.getData());
         }, executor);
 
         // 4.查销售属性名和值
         CompletableFuture<Void> saleAttrValueFuture = skuInfoFuture.thenAcceptAsync((skuInfo) -> {
             if (skuInfo != null) {
-                Result<List<SpuSaleAttr>> skuSaleAttrValues = skuDetailFeignClient
+                Result<List<SpuSaleAttr>> skuSaleAttrValues = skuProductFeignClient
                         .getSkuSaleAttrValues(skuId, skuInfo.getSpuId());
                 detailTo.setSpuSaleAttrList(skuSaleAttrValues.getData());
             }
@@ -132,7 +133,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         // 5.查sku组合
         CompletableFuture<Void> skuValueJsonFuture = skuInfoFuture.thenAcceptAsync((skuInfo) -> {
             if (skuInfo != null) {
-                Result<String> valueJson = skuDetailFeignClient.getSkuValueJson(skuInfo.getSpuId());
+                Result<String> valueJson = skuProductFeignClient.getSkuValueJson(skuInfo.getSpuId());
                 detailTo.setValuesSkuJson(valueJson.getData());
             }
         }, executor);
@@ -140,7 +141,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         // 6.查分类
         CompletableFuture<Void> categoryViewFuture = skuInfoFuture.thenAcceptAsync((skuInfo) -> {
             if (skuInfo != null) {
-                Result<CategoryViewTo> categoryView = skuDetailFeignClient.getCategoryView(skuInfo.getCategory3Id());
+                Result<CategoryViewTo> categoryView = skuProductFeignClient.getCategoryView(skuInfo.getCategory3Id());
                 detailTo.setCategoryView(categoryView.getData());
             }
         }, executor);

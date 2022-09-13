@@ -49,4 +49,14 @@ public class SkuController {
         skuInfoService.cancelSale(skuId);
         return Result.ok();
     }
+
+    /**
+     * 修改sky信息
+     */
+    @PostMapping("/update/skuId")
+    public Result updateSkuInfo(SkuInfo skuInfo) {
+//        skuInfoService.updateSkuInfo();
+//        cacheOpsService.delay2Delete(skuInfo.getId());
+        return Result.ok();
+    }
 }

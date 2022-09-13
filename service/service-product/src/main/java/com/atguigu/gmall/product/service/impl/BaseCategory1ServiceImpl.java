@@ -21,7 +21,6 @@ import java.util.List;
 @Service
 public class BaseCategory1ServiceImpl extends ServiceImpl<BaseCategory1Mapper, BaseCategory1>
         implements BaseCategory1Service {
-
     @Resource
     BaseCategory1Mapper category1Mapper;
 
@@ -35,6 +34,7 @@ public class BaseCategory1ServiceImpl extends ServiceImpl<BaseCategory1Mapper, B
     public CategoryViewTo getCategoryView(Long c3Id) {
         return category1Mapper.getCategoryView(c3Id);
     }
+
 }
 
 

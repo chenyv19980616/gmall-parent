@@ -1,4 +1,4 @@
-package com.atguigu.gmall.item.feign;
+package com.atguigu.gmall.feign.product;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.SkuImage;
@@ -17,9 +17,9 @@ import java.util.List;
  * @author chenyv
  * @create 2022-08-31 18:18
  */
-@FeignClient("service-product")
 @RequestMapping("/api/inner/rpc/product")
-public interface SkuDetailFeignClient {
+@FeignClient("service-product")
+public interface SkuProductFeignClient {
 
 //    @GetMapping("/skuDetail/{skuId}")
 //    public Result<SkuDetailTo> getSkuDetail(@PathVariable("skuId") Long skuId);

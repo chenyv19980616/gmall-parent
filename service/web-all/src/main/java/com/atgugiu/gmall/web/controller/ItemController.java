@@ -1,13 +1,14 @@
 package com.atgugiu.gmall.web.controller;
 
-import com.atgugiu.gmall.web.feign.SkuDetailFeignClient;
 import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.feign.item.SkuDetailFeignClient;
 import com.atguigu.gmall.model.to.SkuDetailTo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import javax.annotation.Resource;
 
 /**
  * @author chenyv
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class ItemController {
 
-    @Autowired
+    @Resource
     SkuDetailFeignClient skuDetailFeignClient;
 
     /**

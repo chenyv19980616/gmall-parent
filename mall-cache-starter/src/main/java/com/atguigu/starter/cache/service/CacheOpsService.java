@@ -18,7 +18,6 @@ public interface CacheOpsService {
      */
     <T> T getCacheData(String cacheKey, Class<T> clz);
 
-
     /**
      * 从缓存中获取一个json并转为一个复杂对象
      *
@@ -27,6 +26,13 @@ public interface CacheOpsService {
      * @return
      */
     Object getCacheData(String cacheKey, Type type);
+
+    /**
+     * 延迟双删
+     *
+     * @param cacheKey
+     */
+    void delay2Delete(String cacheKey);
 
     /**
      * 布隆过滤器判断是否有这个商品
@@ -59,6 +65,15 @@ public interface CacheOpsService {
      * @param obj
      */
     void saveData(String cacheKey, Object obj);
+
+    /**
+     * 把指定对象使用指定的key保存到redis (以秒)
+     *
+     * @param cacheKey
+     * @param obj
+     * @param dataTtl
+     */
+    void saveData(String cacheKey, Object obj, Long dataTtl);
 
     /**
      * 解锁
