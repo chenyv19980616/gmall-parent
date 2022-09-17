@@ -21,7 +21,6 @@ public class SearchApiController {
 
     /**
      * 保存商品信息到ES
-     *
      * @param goods
      * @return
      */
@@ -39,14 +38,26 @@ public class SearchApiController {
 
     /**
      * 商品检索
-     *
      * @param paramVo
      * @return
      */
     @PostMapping("/goods/search")
     public Result<SearchResponseVo> search(@RequestBody SearchParamVo paramVo) {
-
         SearchResponseVo responseVo = goodsService.search(paramVo);
         return Result.ok(responseVo);
+    }
+
+    /**
+     * 增加热度分
+     * @param skuId
+     * @param score 商品最新的得分
+     * @return
+     */
+    @GetMapping("/goods/hotScore/{skuId}")
+    public Result updateHotScore(@PathVariable("skuId") Long skuId,
+                                @RequestParam("score") Long score) {
+
+        goodsService.updateHotScore(skuId, score);
+        return Result.ok();
     }
 }

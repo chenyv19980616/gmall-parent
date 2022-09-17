@@ -51,7 +51,7 @@ public class SearchController {
         //4. 所有品牌，是集合，集合里面每个元素是一个对象，拥有数据（tmId、tmLogo、tmName）
         model.addAttribute("trademarkList", data.getTrademarkList());
         //5. 所有属性，是集合，集合里面每个元素是一个对象，拥有数据（attrId,attrName、List<String> attrValueList）
-        model.addAttribute("attrList", data.getAttrList());
+        model.addAttribute("attrsList", data.getAttrList());
         //6. 排序信息,是对象，拥有数据（type、sort）
         model.addAttribute("orderMap", data.getOrderMap());
         //7. 所有商品列表,是集合，集合里面每个元素是一个对象，拥有这些数据（es中每个商品的详细数据）

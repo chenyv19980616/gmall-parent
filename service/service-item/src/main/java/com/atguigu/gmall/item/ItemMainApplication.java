@@ -10,7 +10,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @create 2022-08-31 14:46
  */
 @EnableThreadPool
-@EnableFeignClients(basePackages = "com.atguigu.gmall.feign.product")
+@EnableFeignClients(basePackages = {"com.atguigu.gmall.feign.product", "com.atguigu.gmall.feign.search"})
 @SpringCloudApplication
 public class ItemMainApplication {
     public static void main(String[] args) {

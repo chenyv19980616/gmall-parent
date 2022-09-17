@@ -3,6 +3,7 @@ package com.atguigu.gmall.item.service.impl;
 import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.feign.product.SkuProductFeignClient;
+import com.atguigu.gmall.feign.search.SearchFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.product.SkuImage;
 import com.atguigu.gmall.model.product.SkuInfo;
@@ -13,6 +14,7 @@ import com.atguigu.starter.cache.annotation.GmallCache;
 import com.atguigu.starter.cache.service.CacheOpsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -38,6 +40,12 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     @Autowired
     CacheOpsService cacheOpsService;
 
+    @Autowired
+    StringRedisTemplate redisTemplate;
+
+    @Autowired
+    SearchFeignClient searchFeignClient;
+
     /**
      * 表达式中的params代表方法的所有参数列表
      *
@@ -54,6 +62,17 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     public SkuDetailTo getSkuDetail(Long skuId) {
         SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);
         return fromRpc;
+    }
+
+    @Override
+    public void updateScore(Long skuId) {
+        //redis统计得分
+        Long increment = redisTemplate.opsForValue()
+                .increment(SysRedisConst.SKU_HOTSCORE_PREFIX + skuId);
+        if (increment % 100 == 0) {
+            //累积到100分更新es
+            searchFeignClient.updateHotScore(skuId, increment);
+        }
     }
 
     public SkuDetailTo getSkuDetailWithCache(Long skuId) {

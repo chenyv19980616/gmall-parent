@@ -9,6 +9,8 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
@@ -43,6 +45,9 @@ public class CacheOpsServiceImpl implements CacheOpsService {
      */
     @Override
     public <T> T getCacheData(String cacheKey, Class<T> clz) {
+
+
+
         String jsonStr = redisTemplate.opsForValue().get(cacheKey);
         if (SysRedisConst.NULL_VALUE.equals(jsonStr)) {
             return null;
