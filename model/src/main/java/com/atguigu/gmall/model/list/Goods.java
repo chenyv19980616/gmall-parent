@@ -63,7 +63,7 @@ public class Goods {
     @Field(type = FieldType.Long)
     private Long hotScore = 0L;
 
-    // 平台属性集合对象
+    // 平台属性集合对象,只要集合内部的属性需要参与检索，就用 Nested映射 ＋ NestedQuery = 正确结果
     // Nested 支持嵌套查询
     @Field(type = FieldType.Nested)
     private List<SearchAttr> attrs;

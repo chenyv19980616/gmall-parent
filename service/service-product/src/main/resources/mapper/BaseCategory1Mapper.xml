@@ -52,8 +52,8 @@
         <result column="c3_id" property="category3Id"></result>
         <result column="c3_name" property="category3Name"></result>
     </resultMap>
-    
-    <select id="getCategoryView" 
+
+    <select id="getCategoryView"
             resultMap="CategoryViewRM">
         select bc3.id   c3_id,
                bc3.name c3_name,
